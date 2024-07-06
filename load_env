@@ -1,0 +1,15 @@
+#!/bin/zsh
+
+echo "Reading .env file"
+
+while IFS='=' read -r key value; do
+    key=$(echo "$key" | tr -d '[:space:]')
+    value=$(echo "$value" | tr -d '[:space:]')
+
+    if [[ ! $key =~ ^\s*# && -n $key ]]; then
+        export "$key"="$value"
+        echo "Exported: $key=$value"
+    fi
+done < .env
+
+echo "Environment variables have been set."
