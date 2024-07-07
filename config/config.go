@@ -1,32 +1,42 @@
 package config
 
-import (
-	"github.com/joho/godotenv"
-	"go.uber.org/zap"
-	"os"
-)
-
-var (
-	logger, _ = zap.NewDevelopment()
-)
+type NetworkConfig struct {
+	// TODO: RPC URLs are set to default values. Replace them with your own. Do not use in production
+	RPCURL         string
+	RouterAddress  string
+	WethAddress    string
+	FactoryAddress string
+}
 
 type Config struct {
-	Web3ProviderURL       string
-	WethAddress           string
-	UniswapRouterAddress  string
-	UniswapFactoryAddress string
+	Networks map[string]NetworkConfig
+	// you can add more configurations here
 }
 
 func LoadConfig() *Config {
-	err := godotenv.Load()
-	if err != nil {
-		logger.Fatal("Error loading .env file", zap.Error(err))
-	}
-
 	return &Config{
-		Web3ProviderURL:       os.Getenv("WEB3_PROVIDER_URL"),
-		WethAddress:           os.Getenv("WETH_ADDRESS"),
-		UniswapRouterAddress:  os.Getenv("UNISWAP_ROUTER_ADDRESS"),
-		UniswapFactoryAddress: os.Getenv("UNISWAP_FACTORY_ADDRESS"),
+		Networks: map[string]NetworkConfig{
+			// TODO: set your own RPC URLs, Router Addresses, and WETH Addresses here
+			"mainnet": {
+				RPCURL:         "https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID",
+				RouterAddress:  "0xUniswapV3RouterAddressOnMainnet",
+				FactoryAddress: "0xUniswapV3FactoryAddressOnMainnet",
+				WethAddress:    "0xWETHAddressOnMainnet",
+			},
+			"arbitrum": {
+				RPCURL:         "https://arb1.arbitrum.io/rpc",
+				RouterAddress:  "0xUniswapV3RouterAddressOnArbitrum",
+				FactoryAddress: "0xUniswapV3FactoryAddressOnArbitrum",
+				WethAddress:    "0xWETHAddressOnArbitrum",
+			},
+			"base": {
+				RPCURL:         "https://base-rpc-url",
+				RouterAddress:  "0xUniswapV3RouterAddressOnBase",
+				WethAddress:    "0xWETHAddressOnBase",
+				FactoryAddress: "0xUniswapV3FactoryAddressOnBase",
+			},
+
+			// add more networks deployed on Uniswap v2 here e.g ZkSync
+		},
 	}
 }
